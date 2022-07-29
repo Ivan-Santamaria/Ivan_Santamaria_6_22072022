@@ -2,11 +2,13 @@ require("dotenv").config();
 // Importation d'express & Mongoose
 const express = require("express");
 const mongoose = require("mongoose");
+const path = require("path");
 
 // Importation des routes
 const userRoutes = require("./routes/user");
+const sauceRoutes = require("./routes/sauce");
 
-// Connexion vers MongoDB
+// Connexion vers MongoDB en récupérant les données dans le fichiers .env
 mongoose
   .connect(process.env.SECRET_DB, {
     useNewUrlParser: true,
@@ -35,6 +37,9 @@ app.use((req, res, next) => {
 // bodyParser déprécié
 app.use(express.json());
 
+app.use("/images", express.static(path.join(__dirname, "images")));
+
 app.use("/api/auth", userRoutes);
+app.use("/api/sauces", sauceRoutes);
 
 module.exports = app;
