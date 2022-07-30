@@ -1,8 +1,19 @@
-require("dotenv").config();
-// Importation d'express & Mongoose
+// Importation d'Express
 const express = require("express");
-const mongoose = require("mongoose");
 const path = require("path");
+const helmet = require("helmet");
+const xss = require("xss-clean");
+const clean = require("xss-clean/lib/xss").clean;
+
+// will return "&lt;script>&lt;/script>"
+const cleaned = clean("<script></script>");
+
+// Importation de MongoDB
+const mongoose = require("mongoose");
+const mongoSanitize = require("express-mongo-sanitize");
+
+//Importation des variables d'environement
+require("dotenv").config();
 
 // Importation des routes
 const userRoutes = require("./routes/user");
@@ -20,6 +31,16 @@ mongoose
 // Creation application express
 const app = express();
 
+// Permet l'utilisation d'Helmet tout en partageant les ressources (erreur: CORS)
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+    // ...
+  })
+);
+
+app.use(xss());
+
 // Middleware appliqué à toutes les routes, permettant l'envoie de requête et d'accéder à l'API
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -31,11 +52,16 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, DELETE, PATCH, OPTIONS"
   );
+  // Même principe de crossOriginResourcePolicy: false, sur helmet
+  //res.setHeader("Cross-Origin-Resource-Policy", "same-site");
   next();
 });
 
 // bodyParser déprécié
 app.use(express.json());
+
+// Pour éviter l'injection de code dans MongoDB
+app.use(mongoSanitize());
 
 app.use("/images", express.static(path.join(__dirname, "images")));
 
