@@ -1,4 +1,3 @@
-const validator = require("validator");
 const passwordValidator = require("password-validator");
 
 module.exports = (req, res, next) => {
@@ -11,5 +10,5 @@ module.exports = (req, res, next) => {
     .not()
     .spaces(0, "Le mot de passe NE doit PAS contenir d'espaces");
 
-  console.log(passwordSchema.validate("Required", { list: true }));
+  console.log(passwordSchema.validate(req.body, { list: true }));
 };

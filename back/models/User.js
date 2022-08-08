@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
 
 // Constuction du Schéma requis pour inscription et identification
-const userSchema = mongoose.Schema({
+let userSchema = mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 });
