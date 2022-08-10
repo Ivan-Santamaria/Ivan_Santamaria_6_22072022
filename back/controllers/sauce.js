@@ -1,7 +1,11 @@
+//// Importation du models sauce.js
 const Sauce = require("../models/Sauce");
+//// Importation du module file system permet de créer et gérer des fichiers pour y stocker ou lire des fichiers dans un programme Node
 const fs = require("fs");
-
-// Create Sauce
+//
+//
+//
+//// Créer une sauce
 exports.createSauce = (req, res, next) => {
   const sauceObject = JSON.parse(req.body.sauce);
   console.log(req.file.filename);
@@ -25,8 +29,10 @@ exports.createSauce = (req, res, next) => {
     )
     .catch((error) => res.status(400).json({ error }));
 };
-
-// Modify Sauce
+//
+//
+//
+//// Modifier la sauce
 exports.modifySauce = (req, res, next) => {
   const sauceObject = req.file
     ? {
@@ -43,8 +49,10 @@ exports.modifySauce = (req, res, next) => {
     .then(() => res.status(200).json({ message: "Sauce modifiée !" }))
     .catch((error) => res.status(400).json({ error }));
 };
-
-// Delete Sauce
+//
+//
+//
+//// Supprimer la sauce
 exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then((sauce) => {
@@ -57,23 +65,28 @@ exports.deleteSauce = (req, res, next) => {
     })
     .catch((error) => res.status(500).json({ error }));
 };
-
-// Get specific Sauce (id)
+//
+//
+//
+//// Recupérer une sauce (id)
 exports.getOneSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id }) // Methode pour trouver une sauce unique
     .then((sauce) => res.status(200).json(sauce))
     .catch((error) => res.status(404).json({ error }));
 };
-
-// Get all Sauces in database
+//
+//
+//
+//// Récupération des sauces (toutes)
 exports.getAllSauces = (req, res, next) => {
   Sauce.find() // Methode renvoie un tableau contenant toutes les sauces dans la base de données
     .then((sauce) => res.status(200).json(sauce))
     .catch((error) => res.status(400).json({ error }));
 };
-
-// Like Or Dislike
-// Un seul like ou dislike par user
+//
+//
+//
+//// Appréciation, un seul like ou dislike par utilisateur
 exports.likeOrNot = (req, res, next) => {
   if (req.body.like === 1) {
     Sauce.updateOne(

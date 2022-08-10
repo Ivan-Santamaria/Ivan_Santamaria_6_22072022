@@ -1,6 +1,10 @@
+//// Importation de mongoose pour la communiaction avec la BDD
 const mongoose = require("mongoose");
-// Creation schema de donnée
-// Modèle de données qui permet d'enregistrer, lire et modifier les objets qui sont dans la base de donnée
+//
+//
+//
+//// Creation schema de donnée
+////// Modèle de donnée qui permet d'enregistrer, lire et modifier les objets qui sont dans la base de donnée
 const sauceSchema = mongoose.Schema({
   //  L'identifiant MongoDB unique de l'utilisateur qui a créé la sauce
   userId: { type: String, required: true },
@@ -25,5 +29,7 @@ const sauceSchema = mongoose.Schema({
   // tableau des identifiants des utilisateurs qui n'ont pas aimé (= disliked) la sauce => Non Requis
   usersDisliked: { type: Array, required: false },
 });
-
+//
+//
+//
 module.exports = mongoose.model("sauce", sauceSchema);
