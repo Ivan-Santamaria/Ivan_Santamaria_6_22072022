@@ -1,8 +1,6 @@
-////Importation de jsonwebtoken pour la distribution de token d'identification
+//Importation de jsonwebtoken pour la distribution de token d'identification
 const jwt = require("jsonwebtoken");
-//
-//
-//
+
 module.exports = (req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];

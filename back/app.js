@@ -1,20 +1,20 @@
 // Importation d'Express
 const express = require("express");
+// Déclaration des chemin de stockage
 const path = require("path");
+// Importation du module helet pour proteger les en-têtes
 const helmet = require("helmet");
+// Important de xss clean
 const xss = require("xss-clean");
 const clean = require("xss-clean/lib/xss").clean;
-
 // will return "&lt;script>&lt;/script>"
 const cleaned = clean("<script></script>");
-
 // Importation de MongoDB
 const mongoose = require("mongoose");
+// IMportation de mongo-sanitize pour des envoi vers la BDD
 const mongoSanitize = require("express-mongo-sanitize");
-
 //Importation des variables d'environement
 require("dotenv").config();
-
 // Importation des routes
 const userRoutes = require("./routes/user");
 const sauceRoutes = require("./routes/sauce");
@@ -57,14 +57,16 @@ app.use((req, res, next) => {
   next();
 });
 
-// bodyParser déprécié
+// bodyParser déprécié, utilisation de express.json suffisante
 app.use(express.json());
 
 // Pour éviter l'injection de code dans MongoDB
 app.use(mongoSanitize());
 
+// Envoi des images vers le repertoire de stockage (images)
 app.use("/images", express.static(path.join(__dirname, "images")));
 
+// Routes
 app.use("/api/auth", userRoutes);
 app.use("/api/sauces", sauceRoutes);
 

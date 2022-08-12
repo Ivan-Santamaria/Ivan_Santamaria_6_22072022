@@ -1,13 +1,11 @@
-//// Importation de bcrypt pour le hachage des mots de passes utilisateurs
+// Importation de bcrypt pour le hachage des mots de passes utilisateurs
 const bcrypt = require("bcrypt");
-//// Importation de jsonwebtoken pour la distribution de token d'identification
+// Importation de jsonwebtoken pour la distribution de token d'identification
 const jwt = require("jsonwebtoken");
-//// Importation du schéma de l'utilisateur
+// Importation du schéma de l'utilisateur
 const User = require("../models/User");
-//
-//
-//
-//// Fonction pour la création d'utilisateurs
+
+// Fonction pour la création d'utilisateurs
 exports.signup = (req, res, next) => {
   bcrypt
     .hash(req.body.password, 10)
@@ -23,10 +21,8 @@ exports.signup = (req, res, next) => {
     })
     .catch((error) => res.status(500).json({ error }));
 };
-//
-//
-//
-//// Fonction pour la connexion à un compte existant dans la base de donnée
+
+// Fonction pour la connexion à un compte existant dans la base de donnée
 exports.login = (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then((user) => {
