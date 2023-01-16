@@ -17,10 +17,11 @@ const mongoSanitize = require("express-mongo-sanitize");
 const dotenv = require("dotenv");
 const result = dotenv.config();
 require("dotenv").config();
+// Importation de fs; servira pour la création automatique du folder "./images"
+const fs = require("fs");
 // Importation des routes
 const userRoutes = require("./routes/user");
 const sauceRoutes = require("./routes/sauce");
-const swaggerUi = require("swagger-ui-express");
 
 // Connexion vers MongoDB en récupérant les données dans le fichiers .env
 mongoose
@@ -65,6 +66,13 @@ app.use(express.json());
 
 // Pour éviter l'injection de code dans MongoDB
 app.use(mongoSanitize());
+
+// Créer un dossier folder s'il n'existe pas
+const dir = "./images";
+
+if (!fs.existsSync(dir)) {
+  fs.mkdirSync(dir, { recursive: true });
+}
 
 // Envoi des images vers le repertoire de stockage (images)
 app.use("/images", express.static(path.join(__dirname, "images")));

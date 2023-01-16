@@ -33,34 +33,70 @@ exports.createSauce = (req, res, next) => {
 
 // Modifier la sauce
 exports.modifySauce = (req, res, next) => {
-  const sauceObject = req.file
-    ? {
-        ...JSON.parse(req.body.sauce), // Récupération de toutes les infos sur l'objet
-        imageUrl: `${req.protocol}://${req.get("host")}/images/${
-          req.file.filename
-        }`,
+  Sauce.findOne({ _id: req.params.id }) // Methode pour trouver une sauce unique
+    .then((sauce) => {
+      if (sauce.userId !== req.auth.userId) {
+        return res.status(404).json({ error: "Non autorisé" });
+      } else {
+        const sauceObject = req.file
+          ? {
+              ...JSON.parse(req.body.sauce), // Récupération de toutes les infos sur l'objet
+              imageUrl: `${req.protocol}://${req.get("host")}/images/${
+                req.file.filename
+              }`,
+            }
+          : { ...req.body };
+        Sauce.updateOne(
+          { _id: req.params.id },
+          { ...sauceObject, _id: req.params.id }
+        )
+          .then(() => res.status(200).json({ message: "Sauce modifiée !" }))
+          .catch((error) => res.status(400).json({ error }));
       }
-    : { ...req.body };
-  Sauce.updateOne(
-    { _id: req.params.id },
-    { ...sauceObject, _id: req.params.id }
-  )
-    .then(() => res.status(200).json({ message: "Sauce modifiée !" }))
-    .catch((error) => res.status(400).json({ error }));
+    })
+    .catch((error) => res.status(404).json({ error }));
 };
 
+//Supprimer la sauce
+// exports.deleteSauce = (req, res, next) => {
+//   Sauce.findOne({ _id: req.params.id })
+//     .then((sauce) => {
+//       const filename = sauce.imageUrl.split("/images/")[1];
+//       fs.unlink(`images/${filename}`, () => {
+//         Sauce.deleteOne({ _id: req.params.id })
+//           .then(() => res.status(200).json({ message: "Sauce supprimée !" }))
+//           .catch((error) => res.status(400).json({ error }));
+//       });
+//     })
+//     .catch((error) => res.status(500).json({ error }));
+// };
 // Supprimer la sauce
 exports.deleteSauce = (req, res, next) => {
-  Sauce.findOne({ _id: req.params.id })
+  Sauce.findOne({ _id: req.params.id }) // Methode pour trouver une sauce unique
     .then((sauce) => {
-      const filename = sauce.imageUrl.split("/images/")[1];
-      fs.unlink(`images/${filename}`, () => {
-        Sauce.deleteOne({ _id: req.params.id })
+      // Recherche de l'Id de l'utilisateur
+      if (sauce.userId !== req.auth.userId) {
+        // Si L'id ne correspond pas => Non autorisé
+        return res.status(404).json({ error: "Non autorisé" });
+      } else {
+        // Si L'id correspond => Autorise la poursuite de la suppression 
+        const sauceObject = req.file
+          ? {
+              ...JSON.parse(req.body.sauce), // Récupération de toutes les infos sur l'objet
+              imageUrl: `${req.protocol}://${req.get("host")}/images/${
+                req.file.filename
+              }`,
+            }
+          : { ...req.body };
+        Sauce.deleteOne(
+          { _id: req.params.id },
+          { ...sauceObject, _id: req.params.id }
+        )
           .then(() => res.status(200).json({ message: "Sauce supprimée !" }))
           .catch((error) => res.status(400).json({ error }));
-      });
+      }
     })
-    .catch((error) => res.status(500).json({ error }));
+    .catch((error) => res.status(404).json({ error }));
 };
 
 // Recupérer une sauce (id)
