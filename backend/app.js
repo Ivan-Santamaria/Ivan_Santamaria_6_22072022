@@ -14,10 +14,13 @@ const mongoose = require("mongoose");
 // IMportation de mongo-sanitize pour des envoi vers la BDD
 const mongoSanitize = require("express-mongo-sanitize");
 //Importation des variables d'environement
+const dotenv = require("dotenv");
+const result = dotenv.config();
 require("dotenv").config();
 // Importation des routes
 const userRoutes = require("./routes/user");
 const sauceRoutes = require("./routes/sauce");
+const swaggerUi = require("swagger-ui-express");
 
 // Connexion vers MongoDB en récupérant les données dans le fichiers .env
 mongoose

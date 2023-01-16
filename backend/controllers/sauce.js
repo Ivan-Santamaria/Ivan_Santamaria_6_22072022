@@ -10,8 +10,10 @@ exports.createSauce = (req, res, next) => {
   delete sauceObject._id;
   // Creation d'une nouvelle instance du modèle Sauce
   const sauce = new Sauce({
+    // ... => Utilisation du spread operator pour copier la variable et la modifier sans toucher à l'originale
     ...sauceObject,
     // Génère url de l'image
+    userId: req.auth.userId,
     imageUrl: `${req.protocol}://${req.get("host")}/images/${
       req.file.filename
     }`,

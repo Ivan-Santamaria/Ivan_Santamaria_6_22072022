@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 // Modèle de donnée qui permet d'enregistrer, lire et modifier les objets qui sont dans la base de donnée
 const sauceSchema = mongoose.Schema({
   //  L'identifiant MongoDB unique de l'utilisateur qui a créé la sauce
-  userId: { type: String, required: true },
+  userId: { type: String, required: true, default: "defaultUserId" },
   // Nom de la sauce => Requis
   name: { type: String, required: true },
   // Fabricant de la sauce => Requis
@@ -23,9 +23,9 @@ const sauceSchema = mongoose.Schema({
   // nombre d'utilisateurs qui n'aiment pas (= dislike) la sauce => Non Requis
   dislikes: { type: Number, required: false },
   // tableau des identifiants des utilisateurs qui ont aimé (= liked) la sauce => Non Requis
-  usersLiked: { type: Array, required: false },
+  usersLiked: { type: [String], required: true, default: [] },
   // tableau des identifiants des utilisateurs qui n'ont pas aimé (= disliked) la sauce => Non Requis
-  usersDisliked: { type: Array, required: false },
+  usersDisliked: { type: [String], required: true, default: [] },
 });
 
 module.exports = mongoose.model("sauce", sauceSchema);

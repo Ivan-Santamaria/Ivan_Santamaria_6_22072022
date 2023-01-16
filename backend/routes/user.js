@@ -18,7 +18,7 @@ const userCtrl = require("../controllers/user");
 // Ceci permettra d'envoyer des formats valide à la base de donnée
 router.post("/signup", emailValidator, passwordValidator, userCtrl.signup);
 // Route permettant à l'utilisateur de récupérer sa session enregistrée sur la BDD
-//Une limite de tentative à été fixée 3
+// Chaques IP possèdes 5 tentatives toutes les 5 minutes)
 router.post("/login", maxPasswordAttempt.limiter, userCtrl.login);
 
 module.exports = router;
