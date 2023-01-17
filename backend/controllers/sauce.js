@@ -162,55 +162,135 @@ exports.getAllSauces = (req, res, next) => {
     );
 };
 
-
 // Appréciation, un seul like ou dislike par utilisateur
-exports.likeOrNot = (req, res, next) => {
-  if (req.body.like === 1) {
-    Sauce.updateOne(
-      { _id: req.params.id },
-      {
-        $inc: { likes: req.body.like++ },
-        $push: { usersLiked: req.body.userId },
-      }
-    )
-      .then((sauce) => res.status(200).json({ message: "Ajout Like" }))
-      .catch((error) => res.status(400).json({ error }));
-  } else if (req.body.like === -1) {
-    Sauce.updateOne(
-      { _id: req.params.id },
-      {
-        $inc: { dislikes: req.body.like++ * -1 },
-        $push: { usersDisliked: req.body.userId },
-      }
-    )
-      .then((sauce) => res.status(200).json({ message: "Ajout Dislike" }))
-      .catch((error) => res.status(400).json({ error }));
-  } else {
-    Sauce.findOne({ _id: req.params.id })
-      .then((sauce) => {
-        if (sauce.usersLiked.includes(req.body.userId)) {
-          Sauce.updateOne(
-            { _id: req.params.id },
-            { $pull: { usersLiked: req.body.userId }, $inc: { likes: -1 } }
-          )
-            .then((sauce) => {
-              res.status(200).json({ message: "Suppression Like" });
-            })
-            .catch((error) => res.status(400).json({ error }));
-        } else if (sauce.usersDisliked.includes(req.body.userId)) {
-          Sauce.updateOne(
-            { _id: req.params.id },
-            {
-              $pull: { usersDisliked: req.body.userId },
-              $inc: { dislikes: -1 },
-            }
-          )
-            .then((sauce) => {
-              res.status(200).json({ message: "Suppression Dislike" });
-            })
-            .catch((error) => res.status(400).json({ error }));
-        }
-      })
-      .catch((error) => res.status(400).json({ error }));
+exports.likeOrNot = (req, res) => {
+  const like = req.body.like;
+
+  const userId = req.body.userId;
+
+  if (req.auth.userId !== userId) {
+    res.status(404).json({
+      message: "Utilisateur non autorisé.",
+    });
   }
+
+  Sauce.findOne({ _id: req.params.id })
+    .then((sauce) => {
+      switch (like) {
+        case -1:
+          if (!sauce.usersDisliked.includes(userId)) {
+            Sauce.updateOne(
+              { _id: req.params.id },
+              {
+                $push: { usersDisliked: req.body.userId },
+                $inc: { dislikes: 1 },
+              }
+            )
+              .then(() => {
+                res
+                  .status(200)
+                  .json({ message: "Dislike ajouté avec succès." });
+              })
+              .catch((error) => {
+                res.status(400).json({
+                  message:
+                    "Une erreur inattendue s'est produite lors de l'ajout du dislike sur la sauce. Veuillez réessayez.",
+                });
+              });
+          } else {
+            res.status(404).json({
+              message:
+                "Vous avez déjà mit un dislike sur cette sauce, retirez-le pour notez la sauce à nouveau.",
+            });
+          }
+
+          break;
+
+        case 0:
+          if (sauce.usersLiked.includes(userId)) {
+            Sauce.updateOne(
+              { _id: req.params.id },
+              {
+                $pull: { usersLiked: req.body.userId },
+                $inc: { likes: -1 },
+              }
+            )
+              .then(() => {
+                res.status(200).json({ message: "Like retiré avec succès." });
+              })
+              .catch((error) => {
+                res.status(400).json({
+                  message:
+                    "Une erreur inattendue s'est produite lors de la suppression du like sur la sauce. Veuillez réessayez.",
+                });
+              });
+          } else if (sauce.usersDisliked.includes(userId)) {
+            Sauce.updateOne(
+              { _id: req.params.id },
+              {
+                $pull: { usersDisliked: req.body.userId },
+                $inc: { dislikes: -1 },
+              }
+            )
+              .then(() => {
+                res
+                  .status(200)
+                  .json({ message: "Dislike retiré avec succès." });
+              })
+              .catch((error) => {
+                res.status(400).json({
+                  message:
+                    "Une erreur inattendue s'est produite lors de la suppression du dislike sur la sauce. Veuillez réessayez.",
+                });
+              });
+          } else {
+            res.status(404).json({
+              message: "Vous n'avez pas encore mit un dislike sur cette sauce.",
+            });
+          }
+
+          break;
+
+        case 1:
+          if (!sauce.usersLiked.includes(userId)) {
+            Sauce.updateOne(
+              { _id: req.params.id },
+              {
+                $push: { usersLiked: req.body.userId },
+                $inc: { likes: 1 },
+              }
+            )
+              .then(() => {
+                res.status(200).json({ message: "Like ajouté avec succès." });
+              })
+              .catch((error) => {
+                res.status(400).json({
+                  message:
+                    "Une erreur inattendue s'est produite lors de l'ajout du like sur la sauce. Veuillez réessayez.",
+                });
+              });
+          } else {
+            res.status(404).json({
+              message:
+                "Vous avez déjà mit un like sur cette sauce, retirez-le pour notez la sauce à nouveau.",
+            });
+          }
+
+          break;
+
+        default:
+          res.status(404).json({
+            message:
+              "Action non reconnue. Vous essayez d'appliquer une action non disponible. Veuillez réessayez.",
+          });
+
+          break;
+      }
+    })
+    .catch((error) => {
+      res.status(404).json({
+        message:
+          "La sauce n'existe pas ou n'est pas disponible pour le moment. Veuillez réessayez.",
+      });
+    });
 };
