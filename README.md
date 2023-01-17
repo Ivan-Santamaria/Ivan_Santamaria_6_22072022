@@ -26,9 +26,9 @@ Vous devez disposer de:
 
 #### Pour l'étape suivante vous aurez besoin de deux terminaux
 
-- Positionnez le premier terminal sur le dossier backend avec la commande: `cd back`
+- Positionnez le premier terminal sur le dossier backend avec la commande: `cd backend`
 - Lancez la comande: `npm install`
-- Positionnez le second terminal sur le dossier frontend avec la commande: `cd front`
+- Positionnez le second terminal sur le dossier frontend avec la commande: `cd frontend`
 - Lancer la comande: `npm install`
 
 ### Configurer le fichier environnement
@@ -37,7 +37,7 @@ Vous devez disposer de:
 
 ### Démarrez le serveur backend & connexion à la base de données
 
-- Depuis le dossier backend lancez la commande: `nodemon server`
+- Depuis le dossier `backend` lancez la commande: `nodemon server`
 - Si tout c'est bien passé vous devriez apercevoir le message suivant dans vôtre terminal:
   [nodemon] starting `node server.js`  
   Listening on port 3000  
@@ -45,7 +45,7 @@ Vous devez disposer de:
 
 ### Démarrez l'interface utilisateur
 
-- Depuis le dossier frontend lancez la commande: `npm run start`
+- Depuis le dossier `frontend` lancez la commande: `npm run start`
 - Le message: `✔ Compiled successfully` apparait dans la console pour vous signifier du bon déroulement de l'opération
 
 ### Accès au portail d'identification
