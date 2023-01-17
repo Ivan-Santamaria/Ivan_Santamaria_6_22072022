@@ -32,8 +32,7 @@ module.exports = (req, res, next) => {
   } else {
     return res.status(400).json({
       error:
-        "Mot de passe invalide!" +
-        passwordSchema.validate(req.body.password, { details: true }),
+        "Invalide! Le mot de passe doit faire entre 8 et 25 caractères et contenir au moins 1 Majuscule, 1 minuscule, 1 chiffre, sans espaces. Il se peut également que vôtre mot de passe fasse partie d'une liste refusée"
     });
   }
 };

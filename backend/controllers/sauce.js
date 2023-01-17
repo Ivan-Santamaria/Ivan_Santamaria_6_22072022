@@ -6,7 +6,7 @@ const fs = require("fs");
 // Créer une sauce
 exports.createSauce = (req, res, next) => {
   const sauceObject = JSON.parse(req.body.sauce);
-  console.log(req.file.filename);
+
   delete sauceObject._id;
   // Creation d'une nouvelle instance du modèle Sauce
   const sauce = new Sauce({
@@ -57,19 +57,6 @@ exports.modifySauce = (req, res, next) => {
     .catch((error) => res.status(404).json({ error }));
 };
 
-//Supprimer la sauce
-// exports.deleteSauce = (req, res, next) => {
-//   Sauce.findOne({ _id: req.params.id })
-//     .then((sauce) => {
-//       const filename = sauce.imageUrl.split("/images/")[1];
-//       fs.unlink(`images/${filename}`, () => {
-//         Sauce.deleteOne({ _id: req.params.id })
-//           .then(() => res.status(200).json({ message: "Sauce supprimée !" }))
-//           .catch((error) => res.status(400).json({ error }));
-//       });
-//     })
-//     .catch((error) => res.status(500).json({ error }));
-// };
 // Supprimer la sauce
 exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id }) // Methode pour trouver une sauce unique
@@ -79,7 +66,7 @@ exports.deleteSauce = (req, res, next) => {
         // Si L'id ne correspond pas => Non autorisé
         return res.status(404).json({ error: "Non autorisé" });
       } else {
-        // Si L'id correspond => Autorise la poursuite de la suppression 
+        // Si L'id correspond => Autorise la poursuite de la suppression
         const sauceObject = req.file
           ? {
               ...JSON.parse(req.body.sauce), // Récupération de toutes les infos sur l'objet
@@ -88,12 +75,16 @@ exports.deleteSauce = (req, res, next) => {
               }`,
             }
           : { ...req.body };
-        Sauce.deleteOne(
-          { _id: req.params.id },
-          { ...sauceObject, _id: req.params.id }
-        )
-          .then(() => res.status(200).json({ message: "Sauce supprimée !" }))
-          .catch((error) => res.status(400).json({ error }));
+        // Suppression de l'image dans le dossier /images
+        const filename = sauce.imageUrl.split("/images/")[1];
+        fs.unlink(`images/${filename}`, () => {
+          Sauce.deleteOne(
+            { _id: req.params.id },
+            { ...sauceObject, _id: req.params.id }
+          )
+            .then(() => res.status(200).json({ message: "Sauce supprimée !" }))
+            .catch((error) => res.status(400).json({ error }));
+        });
       }
     })
     .catch((error) => res.status(404).json({ error }));
