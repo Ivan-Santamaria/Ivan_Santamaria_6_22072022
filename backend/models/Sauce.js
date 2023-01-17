@@ -19,12 +19,12 @@ const sauceSchema = mongoose.Schema({
   // Nombre entre 1 et 10 décrivant la sauce => Requis
   heat: { type: Number, required: true },
   // Nombre d'utilisateurs qui aiment (= likent) la sauce => Requis
-  likes: { type: Number, required: false },
+  likes: { type: Number, required: true },
   // nombre d'utilisateurs qui n'aiment pas (= dislike) la sauce => Non Requis
-  dislikes: { type: Number, required: false },
-  // tableau des identifiants des utilisateurs qui ont aimé (= liked) la sauce => Non Requis
+  dislikes: { type: Number, required: true },
+  // tableau des identifiants des utilisateurs qui ont aimé (= liked) la sauce => Requis
   usersLiked: { type: [String], required: true, default: [] },
-  // tableau des identifiants des utilisateurs qui n'ont pas aimé (= disliked) la sauce => Non Requis
+  // tableau des identifiants des utilisateurs qui n'ont pas aimé (= disliked) la sauce => Requis
   usersDisliked: { type: [String], required: true, default: [] },
 });
 
