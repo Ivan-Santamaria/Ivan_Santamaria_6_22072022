@@ -14,6 +14,7 @@ const multer = require("../middleware/multer-config");
 const sauceCtrl = require("../controllers/sauce");
 
 // Création des routes pour les sauces
+//-------------------------------------
 
 // Enregistre une sauce dans la base de données //
 // Passe par l'Authentification pour identifier l'user => Multer pour les fichier(img) => Le controller de sauce pour creer la sauce

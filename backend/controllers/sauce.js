@@ -86,7 +86,7 @@ exports.modifySauce = (req, res, next) => {
             .catch((error) =>
               res.status(400).json({
                 error:
-                  "Une erreur inattendue s'est produite lors de la mise a jour de la sauce. Veuillez réessayez.",
+                  "Une erreur inattendue s'est produite lors de la mise a jour de la sauce. Veuillez réessayer.",
               })
             );
         }
@@ -106,7 +106,9 @@ exports.deleteSauce = (req, res, next) => {
       // Recherche de l'Id de l'utilisateur
       if (sauce.userId !== req.auth.userId) {
         // Si L'id ne correspond pas => Non autorisé
-        return res.status(404).json({ error: "Non autorisé" });
+        return res.status(404).json({
+          error: "Vous n'avez pas la permission de supprimer cette sauce",
+        });
       } else {
         // Si L'id correspond => Autorise la poursuite de la suppression
         const sauceObject = req.file
@@ -194,7 +196,7 @@ exports.likeOrNot = (req, res) => {
               .catch((error) => {
                 res.status(400).json({
                   message:
-                    "Une erreur inattendue s'est produite lors de l'ajout du dislike sur la sauce. Veuillez réessayez.",
+                    "Une erreur inattendue s'est produite lors de l'ajout du dislike sur la sauce. Veuillez réessayer.",
                 });
               });
           } else {
@@ -221,7 +223,7 @@ exports.likeOrNot = (req, res) => {
               .catch((error) => {
                 res.status(400).json({
                   message:
-                    "Une erreur inattendue s'est produite lors de la suppression du like sur la sauce. Veuillez réessayez.",
+                    "Une erreur inattendue s'est produite lors de la suppression du like sur la sauce. Veuillez réessayer.",
                 });
               });
           } else if (sauce.usersDisliked.includes(userId)) {
@@ -240,7 +242,7 @@ exports.likeOrNot = (req, res) => {
               .catch((error) => {
                 res.status(400).json({
                   message:
-                    "Une erreur inattendue s'est produite lors de la suppression du dislike sur la sauce. Veuillez réessayez.",
+                    "Une erreur inattendue s'est produite lors de la suppression du dislike sur la sauce. Veuillez réessayer.",
                 });
               });
           } else {
@@ -266,7 +268,7 @@ exports.likeOrNot = (req, res) => {
               .catch((error) => {
                 res.status(400).json({
                   message:
-                    "Une erreur inattendue s'est produite lors de l'ajout du like sur la sauce. Veuillez réessayez.",
+                    "Une erreur inattendue s'est produite lors de l'ajout du like sur la sauce. Veuillez réessayer.",
                 });
               });
           } else {
@@ -281,7 +283,7 @@ exports.likeOrNot = (req, res) => {
         default:
           res.status(404).json({
             message:
-              "Action non reconnue. Vous essayez d'appliquer une action non disponible. Veuillez réessayez.",
+              "Action non reconnue. Vous essayez d'appliquer une action non disponible. Veuillez réessayer.",
           });
 
           break;
@@ -290,7 +292,7 @@ exports.likeOrNot = (req, res) => {
     .catch((error) => {
       res.status(404).json({
         message:
-          "La sauce n'existe pas ou n'est pas disponible pour le moment. Veuillez réessayez.",
+          "La sauce n'existe pas ou n'est pas disponible pour le moment. Veuillez réessayer.",
       });
     });
 };

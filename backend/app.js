@@ -2,7 +2,7 @@
 const express = require("express");
 // Déclaration des chemin de stockage
 const path = require("path");
-// Importation du module helet pour proteger les en-têtes
+// Importation du module helmet pour proteger les en-têtes
 const helmet = require("helmet");
 // Important de xss clean
 const xss = require("xss-clean");

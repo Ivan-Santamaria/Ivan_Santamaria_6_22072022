@@ -1,11 +1,9 @@
-////Importation d'express
+//Importation d'express
 const express = require("express");
-//// Initialisation du router
+// Initialisation du router
 const router = express.Router();
-//
-//
-//
-//// Importation des middleware
+
+// Importation des middlewares
 const passwordValidator = require("../middleware/password-validator");
 const emailValidator = require("../middleware/email-validator");
 const maxPasswordAttempt = require("../middleware/password-limiter");

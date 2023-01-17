@@ -1,7 +1,7 @@
+// Utiliser https au lieu de http pour la sécurisation
 const http = require("http");
 const app = require("./app");
 const dotenv = require("dotenv");
-const result = dotenv.config();
 
 // Fonction normalizePort renvoie un port valide
 const normalizePort = (val) => {

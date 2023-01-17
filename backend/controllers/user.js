@@ -6,8 +6,10 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 // Importation de crypto-js pour le cryptage des e-mails
 const cryptojs = require("crypto-js");
+// Importation dotenv pour la prise en compte des variable d'environnement
 const dotenv = require("dotenv");
 const result = dotenv.config();
+
 // Fonction pour la création d'utilisateurs
 exports.signup = (req, res, next) => {
   // Utilisation de crypto-js pour crypter l'adresse mail à la création du profil utilisateur
@@ -19,12 +21,14 @@ exports.signup = (req, res, next) => {
     .hash(req.body.password, 10)
     .then((hash) => {
       const user = new User({
-        email: emailCrypt, // req.body.email, === // emailCrypt,
+        email: emailCrypt,
         password: hash,
       });
       user
         .save()
-        .then(() => res.status(201).json({ message: "Utilisateur créé !" }))
+        .then(() =>
+          res.status(201).json({ message: "Utilisateur créé! Bienvenue" })
+        )
         .catch((error) => res.status(400).json({ error }));
     })
     .catch((error) => res.status(500).json({ error }));
@@ -39,7 +43,9 @@ exports.login = (req, res, next) => {
   User.findOne({ email: emailCrypt })
     .then((user) => {
       if (!user) {
-        return res.status(401).json({ error: "Utilisateur non trouvé !" });
+        return res
+          .status(401)
+          .json({ error: "Utilisateur non trouvé!Veuillez réessayer." });
       }
       // Utilisation de bcrypt pour comparer les données de la BDD avec la saisi de l'utilisateur
       bcrypt
@@ -47,7 +53,9 @@ exports.login = (req, res, next) => {
         .then((valid) => {
           // En cas de non correspondance l'utilisateur se verra refuser l'acces
           if (!valid) {
-            return res.status(401).json({ error: "Mot de passe incorrect !" });
+            return res
+              .status(401)
+              .json({ error: "Mot de passe incorrect! Veuillez réessayer." });
           }
           res.status(200).json({
             userId: user._id,
@@ -56,7 +64,17 @@ exports.login = (req, res, next) => {
             }),
           });
         })
-        .catch((error) => res.status(500).json({ error }));
+        .catch((error) =>
+          res.status(500).json({
+            error:
+              "Une erreur inattendue s'est produite lors de la vérification du mot de passe. Veuillez réessayer.",
+          })
+        );
     })
-    .catch((error) => res.status(500).json({ error }));
+    .catch((error) =>
+      res.status(500).json({
+        error:
+          "Une erreur inattendue s'est produite lors de la rechercher de l'utilisateur. Veuillez réessayer.",
+      })
+    );
 };
